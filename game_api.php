@@ -4,7 +4,9 @@
  * Handles game actions: saving scores, getting user data, etc.
  */
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'database.php';
 require_once 'words.php';
 
@@ -304,6 +306,18 @@ function getRandomWord($difficulty = 'medium') {
 
 // Handle API requests
 $action = $_GET['action'] ?? $_POST['action'] ?? '';
+
+// Actions that require authentication
+$authRequiredActions = ['getWord', 'saveScore', 'getProfile'];
+
+if (in_array($action, $authRequiredActions) && !isLoggedIn()) {
+    echo json_encode([
+        'success' => false,
+        'error' => 'Authentication required',
+        'redirect' => 'login.php'
+    ]);
+    exit;
+}
 
 switch ($action) {
     case 'getWord':

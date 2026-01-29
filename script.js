@@ -56,13 +56,14 @@ class WordBombGame {
     init() {
         this.bindEvents();
         this.loadHighScores();
-        this.checkAuthStatus();
+        this.initAuthenticatedUser();
         
         // Select default difficulty
         document.querySelector('[data-difficulty="medium"]').classList.add('selected');
     }
 
-    async checkAuthStatus() {
+    async initAuthenticatedUser() {
+        // User is always authenticated when accessing the game
         try {
             const response = await fetch('game_api.php?action=checkAuth');
             const data = await response.json();
@@ -70,42 +71,12 @@ class WordBombGame {
             this.isLoggedIn = data.logged_in;
             this.currentUser = data.logged_in ? { id: data.user_id, username: data.username } : null;
             
-            this.updateUserUI();
+            // If somehow not logged in, redirect to login
+            if (!this.isLoggedIn) {
+                window.location.href = 'login.php';
+            }
         } catch (error) {
             console.error('Error checking auth:', error);
-        }
-    }
-
-    updateUserUI() {
-        const guestView = document.getElementById('guest-view');
-        const loggedInView = document.getElementById('logged-in-view');
-        const usernameDisplay = document.getElementById('username-display');
-        
-        if (this.isLoggedIn && this.currentUser) {
-            guestView.classList.add('hidden');
-            loggedInView.classList.remove('hidden');
-            usernameDisplay.textContent = this.currentUser.username;
-        } else {
-            guestView.classList.remove('hidden');
-            loggedInView.classList.add('hidden');
-        }
-    }
-
-    async logout() {
-        try {
-            const formData = new FormData();
-            formData.append('action', 'logout');
-            
-            await fetch('auth.php', {
-                method: 'POST',
-                body: formData
-            });
-            
-            this.isLoggedIn = false;
-            this.currentUser = null;
-            this.updateUserUI();
-        } catch (error) {
-            console.error('Error logging out:', error);
         }
     }
 
@@ -141,9 +112,6 @@ class WordBombGame {
 
         // Sound toggle
         document.getElementById('sound-toggle').addEventListener('click', () => this.toggleSound());
-        
-        // Logout button
-        document.getElementById('logout-btn').addEventListener('click', () => this.logout());
     }
 
     showScreen(screenName) {

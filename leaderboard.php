@@ -201,7 +201,7 @@ $avatars = ['🎮', '💣', '🔥', '⭐', '🏆', '👑', '🎯', '⚡', '🌟'
 
         <!-- Back to Game -->
         <div style="text-align: center; margin-top: 30px;">
-            <a href="index.html" class="guest-btn">
+            <a href="index.php" class="guest-btn">
                 <span class="btn-icon">🎮</span>
                 Back to Game
             </a>
@@ -214,5 +214,34 @@ $avatars = ['🎮', '💣', '🔥', '⭐', '🏆', '👑', '🎯', '⚡', '🌟'
         <div class="floating-bomb bomb-3">🔥</div>
         <div class="floating-bomb bomb-4">⏰</div>
     </div>
+
+    <!-- Theme Toggle -->
+    <button id="theme-toggle" class="theme-toggle" title="Toggle Light/Dark Mode">
+        <span class="theme-icon">🌙</span>
+    </button>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('.theme-icon');
+        
+        // Check for saved theme preference or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+        }
+    </script>
 </body>
 </html>

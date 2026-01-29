@@ -3,12 +3,18 @@ require_once 'auth.php';
 
 // Redirect if already logged in
 if (isLoggedIn()) {
-    header('Location: index.html');
+    header('Location: index.php');
     exit;
 }
 
 $error = '';
 $success = '';
+
+// Get redirect destination
+$redirect = $_GET['redirect'] ?? $_POST['redirect'] ?? 'index.php';
+if ($redirect === 'game') {
+    $redirect = 'index.php';
+}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
@@ -19,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     );
     
     if ($result['success']) {
-        header('Location: index.html');
+        header('Location: ' . $redirect);
         exit;
     } else {
         $error = implode('<br>', $result['errors']);
@@ -36,7 +42,7 @@ if (isset($_GET['registered'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Word Bomb</title>
+    <title>Login - Decrypt</title>
     <link rel="stylesheet" href="auth-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -44,7 +50,7 @@ if (isset($_GET['registered'])) {
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <a href="index.html" class="logo">💣 WORD BOMB</a>
+                <a href="index.php" class="logo">💣 Decrypt</a>
                 <h1>Welcome Back!</h1>
                 <p>Login to continue your bomb defusing journey</p>
             </div>
@@ -64,6 +70,7 @@ if (isset($_GET['registered'])) {
             <?php endif; ?>
 
             <form method="POST" class="auth-form" id="login-form">
+                <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($redirect); ?>">
                 <div class="form-group">
                     <label for="username">
                         <span class="label-icon">👤</span>
@@ -115,17 +122,6 @@ if (isset($_GET['registered'])) {
                 </button>
             </form>
 
-            <div class="auth-divider">
-                <span>OR</span>
-            </div>
-
-            <div class="guest-option">
-                <a href="index.html" class="guest-btn">
-                    <span class="btn-icon">🎮</span>
-                    Play as Guest
-                </a>
-            </div>
-
             <div class="auth-footer">
                 <p>Don't have an account? <a href="register.php">Register Now</a></p>
             </div>
@@ -137,9 +133,36 @@ if (isset($_GET['registered'])) {
             <div class="floating-bomb bomb-3">🔥</div>
             <div class="floating-bomb bomb-4">⏰</div>
         </div>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="theme-toggle" title="Toggle Light/Dark Mode">
+            <span class="theme-icon">🌙</span>
+        </button>
     </div>
 
     <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('.theme-icon');
+        
+        // Check for saved theme preference or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+        }
+
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
             input.type = input.type === 'password' ? 'text' : 'password';

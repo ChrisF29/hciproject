@@ -3,7 +3,7 @@ require_once 'auth.php';
 
 // Redirect if already logged in
 if (isLoggedIn()) {
-    header('Location: index.html');
+    header('Location: index.php');
     exit;
 }
 
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header">
-                <a href="index.html" class="logo">💣 WORD BOMB</a>
+                <a href="index.php" class="logo">💣 WORD BOMB</a>
                 <h1>Join the Squad!</h1>
                 <p>Create an account to save your scores and compete</p>
             </div>
@@ -146,17 +146,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
                 </button>
             </form>
 
-            <div class="auth-divider">
-                <span>OR</span>
-            </div>
-
-            <div class="guest-option">
-                <a href="index.html" class="guest-btn">
-                    <span class="btn-icon">🎮</span>
-                    Play as Guest
-                </a>
-            </div>
-
             <div class="auth-footer">
                 <p>Already have an account? <a href="login.php">Login Here</a></p>
             </div>
@@ -168,9 +157,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
             <div class="floating-bomb bomb-3">🔥</div>
             <div class="floating-bomb bomb-4">⏰</div>
         </div>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="theme-toggle" title="Toggle Light/Dark Mode">
+            <span class="theme-icon">🌙</span>
+        </button>
     </div>
 
     <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('.theme-icon');
+        
+        // Check for saved theme preference or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+        }
+
         function togglePassword(inputId) {
             const input = document.getElementById(inputId);
             input.type = input.type === 'password' ? 'text' : 'password';

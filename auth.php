@@ -3,7 +3,9 @@
  * Word Bomb Game - Authentication Handler
  */
 
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'database.php';
 
 /**
