@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Bomb - Defuse the Scramble!</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Start Screen -->
+        <div id="start-screen" class="screen active">
+            <div class="title-container">
+                <h1 class="game-title">💣 WORD BOMB 💣</h1>
+                <p class="subtitle">Defuse the scramble before it's too late!</p>
+            </div>
+            
+            <div class="difficulty-selector">
+                <h3>Select Difficulty</h3>
+                <div class="difficulty-buttons">
+                    <button class="diff-btn" data-difficulty="easy" data-time="30">
+                        <span class="diff-icon">🟢</span>
+                        <span class="diff-name">Easy</span>
+                        <span class="diff-time">30 seconds</span>
+                    </button>
+                    <button class="diff-btn" data-difficulty="medium" data-time="20">
+                        <span class="diff-icon">🟡</span>
+                        <span class="diff-name">Medium</span>
+                        <span class="diff-time">20 seconds</span>
+                    </button>
+                    <button class="diff-btn" data-difficulty="hard" data-time="12">
+                        <span class="diff-icon">🔴</span>
+                        <span class="diff-name">Hard</span>
+                        <span class="diff-time">12 seconds</span>
+                    </button>
+                    <button class="diff-btn" data-difficulty="extreme" data-time="7">
+                        <span class="diff-icon">💀</span>
+                        <span class="diff-name">Extreme</span>
+                        <span class="diff-time">7 seconds</span>
+                    </button>
+                </div>
+            </div>
+            
+            <button id="start-btn" class="main-btn pulse">START GAME</button>
+            
+            <div class="instructions">
+                <h4>How to Play</h4>
+                <ul>
+                    <li>🔤 Unscramble the word before the bomb explodes</li>
+                    <li>⌨️ Type your answer and press Enter or click Submit</li>
+                    <li>💡 Use hints if you're stuck (costs points)</li>
+                    <li>🏆 Score points for each word defused</li>
+                    <li>⚡ Faster answers = More points!</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="score-display">
+                    <span class="label">SCORE</span>
+                    <span id="score" class="value">0</span>
+                </div>
+                <div class="streak-display">
+                    <span class="label">STREAK</span>
+                    <span id="streak" class="value">🔥 0</span>
+                </div>
+                <div class="words-display">
+                    <span class="label">DEFUSED</span>
+                    <span id="words-defused" class="value">0</span>
+                </div>
+            </div>
+
+            <div class="bomb-container">
+                <div id="bomb" class="bomb">
+                    <div class="bomb-body">
+                        <div class="bomb-highlight"></div>
+                        <div class="bomb-timer-display">
+                            <span id="timer-display">30</span>
+                        </div>
+                    </div>
+                    <div class="bomb-fuse">
+                        <div id="fuse-spark" class="fuse-spark"></div>
+                    </div>
+                    <div class="bomb-cap"></div>
+                </div>
+                <div id="explosion" class="explosion hidden">
+                    <div class="explosion-inner"></div>
+                </div>
+            </div>
+
+            <div class="word-area">
+                <div class="category-hint">
+                    <span id="category">Category: Loading...</span>
+                </div>
+                <div id="scrambled-word" class="scrambled-word">LOADING</div>
+                <div class="word-length">
+                    <span id="word-length">Word length: 0 letters</span>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="guess-input" placeholder="Type your guess..." autocomplete="off" autofocus>
+                <button id="submit-btn" class="submit-btn">DEFUSE!</button>
+            </div>
+
+            <div class="game-controls">
+                <button id="hint-btn" class="control-btn hint-btn">
+                    💡 HINT <span id="hint-cost">(-50 pts)</span>
+                </button>
+                <button id="skip-btn" class="control-btn skip-btn">
+                    ⏭️ SKIP <span>(-100 pts)</span>
+                </button>
+            </div>
+
+            <div id="hint-display" class="hint-display hidden"></div>
+            <div id="feedback" class="feedback"></div>
+        </div>
+
+        <!-- Game Over Screen -->
+        <div id="gameover-screen" class="screen">
+            <div id="gameover-content">
+                <h2 id="gameover-title">💥 BOOM! 💥</h2>
+                <p id="gameover-message">The bomb exploded!</p>
+                
+                <div class="final-stats">
+                    <div class="stat">
+                        <span class="stat-label">Final Score</span>
+                        <span id="final-score" class="stat-value">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Words Defused</span>
+                        <span id="final-words" class="stat-value">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Best Streak</span>
+                        <span id="final-streak" class="stat-value">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">The Word Was</span>
+                        <span id="correct-word" class="stat-value correct-word">---</span>
+                    </div>
+                </div>
+
+                <div class="highscore-section">
+                    <h3>🏆 High Scores</h3>
+                    <div id="highscores-list" class="highscores-list"></div>
+                </div>
+
+                <div class="gameover-buttons">
+                    <button id="play-again-btn" class="main-btn">PLAY AGAIN</button>
+                    <button id="menu-btn" class="secondary-btn">MAIN MENU</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sound Toggle -->
+        <button id="sound-toggle" class="sound-toggle">🔊</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
