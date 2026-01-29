@@ -9,6 +9,19 @@
 </head>
 <body>
     <div class="game-container">
+        <!-- User Bar -->
+        <div id="user-bar" class="user-bar">
+            <div id="guest-view" class="user-section">
+                <a href="login.php" class="user-btn login-btn">🔐 Login</a>
+                <a href="register.php" class="user-btn register-btn">📝 Register</a>
+            </div>
+            <div id="logged-in-view" class="user-section hidden">
+                <span id="user-welcome" class="user-welcome">👤 Welcome, <span id="username-display">Player</span>!</span>
+                <a href="leaderboard.php" class="user-btn leaderboard-btn">🏆 Leaderboard</a>
+                <button id="logout-btn" class="user-btn logout-btn">🚪 Logout</button>
+            </div>
+        </div>
+
         <!-- Start Screen -->
         <div id="start-screen" class="screen active">
             <div class="title-container">
@@ -144,9 +157,15 @@
                     </div>
                 </div>
 
+                <div id="achievement-popup" class="achievement-popup hidden">
+                    <h3>🎉 Achievement Unlocked!</h3>
+                    <div id="achievement-content"></div>
+                </div>
+
                 <div class="highscore-section">
                     <h3>🏆 High Scores</h3>
                     <div id="highscores-list" class="highscores-list"></div>
+                    <a href="leaderboard.php" class="view-all-btn">View Full Leaderboard →</a>
                 </div>
 
                 <div class="gameover-buttons">

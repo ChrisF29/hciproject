@@ -18,6 +18,10 @@ class WordBombGame {
         this.hintsUsed = 0;
         this.timer = null;
         this.soundEnabled = true;
+        
+        // User state
+        this.isLoggedIn = false;
+        this.currentUser = null;
 
         // DOM Elements
         this.screens = {
@@ -52,9 +56,57 @@ class WordBombGame {
     init() {
         this.bindEvents();
         this.loadHighScores();
+        this.checkAuthStatus();
         
         // Select default difficulty
         document.querySelector('[data-difficulty="medium"]').classList.add('selected');
+    }
+
+    async checkAuthStatus() {
+        try {
+            const response = await fetch('game_api.php?action=checkAuth');
+            const data = await response.json();
+            
+            this.isLoggedIn = data.logged_in;
+            this.currentUser = data.logged_in ? { id: data.user_id, username: data.username } : null;
+            
+            this.updateUserUI();
+        } catch (error) {
+            console.error('Error checking auth:', error);
+        }
+    }
+
+    updateUserUI() {
+        const guestView = document.getElementById('guest-view');
+        const loggedInView = document.getElementById('logged-in-view');
+        const usernameDisplay = document.getElementById('username-display');
+        
+        if (this.isLoggedIn && this.currentUser) {
+            guestView.classList.add('hidden');
+            loggedInView.classList.remove('hidden');
+            usernameDisplay.textContent = this.currentUser.username;
+        } else {
+            guestView.classList.remove('hidden');
+            loggedInView.classList.add('hidden');
+        }
+    }
+
+    async logout() {
+        try {
+            const formData = new FormData();
+            formData.append('action', 'logout');
+            
+            await fetch('auth.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            this.isLoggedIn = false;
+            this.currentUser = null;
+            this.updateUserUI();
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
     }
 
     bindEvents() {
@@ -89,6 +141,9 @@ class WordBombGame {
 
         // Sound toggle
         document.getElementById('sound-toggle').addEventListener('click', () => this.toggleSound());
+        
+        // Logout button
+        document.getElementById('logout-btn').addEventListener('click', () => this.logout());
     }
 
     showScreen(screenName) {
@@ -348,7 +403,7 @@ class WordBombGame {
         }, 1500);
     }
 
-    showGameOver(survived = false) {
+    async showGameOver(survived = false) {
         const gameoverTitle = document.getElementById('gameover-title');
         const gameoverMessage = document.getElementById('gameover-message');
         
@@ -367,9 +422,60 @@ class WordBombGame {
         document.getElementById('final-streak').textContent = `🔥 ${this.bestStreak}`;
         document.getElementById('correct-word').textContent = this.currentWord;
 
+        // Save score to server if logged in
+        await this.saveScoreToServer();
+        
         this.saveHighScore();
         this.displayHighScores();
         this.showScreen('gameover');
+    }
+
+    async saveScoreToServer() {
+        if (!this.isLoggedIn) {
+            return;
+        }
+        
+        try {
+            const formData = new FormData();
+            formData.append('action', 'saveScore');
+            formData.append('score', this.score);
+            formData.append('words_defused', this.wordsDefused);
+            formData.append('best_streak', this.bestStreak);
+            formData.append('difficulty', this.difficulty);
+            formData.append('hints_used', this.hintsUsed);
+            
+            const response = await fetch('game_api.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const data = await response.json();
+            
+            if (data.success && data.new_achievements && data.new_achievements.length > 0) {
+                this.showAchievements(data.new_achievements);
+            }
+        } catch (error) {
+            console.error('Error saving score:', error);
+        }
+    }
+
+    showAchievements(achievements) {
+        const popup = document.getElementById('achievement-popup');
+        const content = document.getElementById('achievement-content');
+        
+        content.innerHTML = achievements.map(a => `
+            <div class="achievement-item">
+                <span class="achievement-icon">${a.icon}</span>
+                <div class="achievement-info">
+                    <div class="achievement-name">${a.name}</div>
+                    <div class="achievement-desc">${a.description}</div>
+                    <div class="achievement-points">+${a.points} points</div>
+                </div>
+            </div>
+        `).join('');
+        
+        popup.classList.remove('hidden');
+        this.playSound('correct');
     }
 
     updateDisplay() {
