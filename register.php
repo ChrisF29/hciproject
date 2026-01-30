@@ -141,13 +141,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
                         </div>
                         <ul class="requirements-list" id="reqList">
                             <li id="len"><span class="req-icon">○</span> 8+ Characters</li>
-                            <li id="up"><span class="req-icon">○</span> Uppercase Letter</li>
-                            <li id="num"><span class="req-icon">○</span> Contains Number</li>
-                            <li id="spec"><span class="req-icon">○</span> Special Symbol</li>
+                            <li id="up"><span class="req-icon">○</span> Uppercase (A-Z)</li>
+                            <li id="num"><span class="req-icon">○</span> Number (0-9)</li>
+                            <li id="spec"><span class="req-icon">○</span> Symbol (!@#$)</li>
                         </ul>
-                        <div class="strength-container" id="strengthContainer">
-                            <div class="strength-bar" id="strengthBar"></div>
-                        </div>
                     </div>
 
                     <div class="form-group">
@@ -409,42 +406,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
             let strength = 0;
             
             // Update each requirement indicator
-            for (const [key, met] of Object.entries(requirements)) {
+            Object.keys(requirements).forEach(key => {
+                const met = requirements[key];
                 const element = document.getElementById(key);
-                const icon = element.querySelector('.req-icon');
-                if (met) {
-                    element.classList.add('met');
-                    icon.textContent = '●';
-                    icon.style.color = '#2ed573';
-                    strength++;
-                } else {
-                    element.classList.remove('met');
-                    icon.textContent = '○';
-                    icon.style.color = '';
+                if (element) {
+                    const icon = element.querySelector('.req-icon');
+                    if (met) {
+                        element.classList.add('met');
+                        if (icon) {
+                            icon.textContent = '●';
+                            icon.style.color = '#2ed573';
+                        }
+                        strength++;
+                    } else {
+                        element.classList.remove('met');
+                        if (icon) {
+                            icon.textContent = '○';
+                            icon.style.color = '';
+                        }
+                    }
                 }
-            }
+            });
 
-            // Update strength bar
-            const strengthBar = document.getElementById('strengthBar');
-            const strengthContainer = document.getElementById('strengthContainer');
-            
-            if (password.length > 0) {
-                strengthContainer.style.display = 'block';
-                const percent = (strength / 4) * 100;
-                strengthBar.style.width = percent + '%';
-                
-                if (strength <= 1) {
-                    strengthBar.style.background = '#ff4757';
-                } else if (strength <= 2) {
-                    strengthBar.style.background = '#ffa502';
-                } else if (strength === 3) {
-                    strengthBar.style.background = '#7bed9f';
-                } else {
-                    strengthBar.style.background = '#2ed573';
-                }
-            } else {
-                strengthContainer.style.display = 'none';
-            }
         }
 
         // Password match checker

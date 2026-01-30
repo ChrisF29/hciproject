@@ -302,10 +302,20 @@ body::before {
     margin-top: 25px;
 }
 
+.step-navigation .auth-btn {
+    width: auto;
+    flex: 1;
+    margin-top: 0;
+    min-width: 0;
+}
+
 .step-navigation .btn-back {
     background: transparent;
     border: 2px solid var(--text-muted);
     color: var(--text-secondary);
+    box-shadow: none;
+    flex: 0 0 auto;
+    padding: 18px 25px;
 }
 
 .step-navigation .btn-back:hover {
@@ -506,19 +516,34 @@ body::before {
 
 /* Password Strength Container */
 .strength-container {
-    height: 6px;
+    height: 8px;
     background: var(--input-bg);
-    border-radius: 3px;
+    border-radius: 4px;
     margin-top: 12px;
     overflow: hidden;
-    display: none;
+    display: block;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
 }
 
-.strength-container .strength-bar {
+#strengthBar {
     height: 100%;
+    min-height: 8px;
     width: 0;
-    border-radius: 3px;
-    transition: all var(--transition-normal);
+    border-radius: 4px;
+    transition: width 0.4s ease-out, background-color 0.3s ease;
+    background-color: #ff4757;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.strength-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 6px;
+    text-align: right;
+    transition: color 0.3s ease;
 }
 
 /* Password Input */
@@ -797,6 +822,44 @@ body::before {
     .auth-btn {
         padding: 16px;
         font-size: 1rem;
+    }
+
+    /* Fix step navigation on mobile */
+    .step-navigation {
+        flex-wrap: nowrap;
+    }
+
+    .step-navigation .auth-btn {
+        padding: 14px 18px;
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+
+    .step-navigation .btn-back {
+        padding: 14px 18px;
+    }
+
+    .step-navigation .btn-icon {
+        font-size: 1rem;
+    }
+
+    /* Smaller breadcrumbs on mobile */
+    .breadcrumb-container {
+        padding: 0 5px;
+    }
+
+    .step-number {
+        width: 38px;
+        height: 38px;
+        font-size: 0.95rem;
+    }
+
+    .step-label {
+        font-size: 0.65rem;
+    }
+
+    .breadcrumb-line {
+        margin: 0 5px;
     }
 }
 
@@ -1258,4 +1321,317 @@ body::before {
 ::selection {
     background: var(--secondary-color);
     color: var(--dark-bg);
+}
+
+/* ==================== LANDSCAPE MODE OPTIMIZATIONS ==================== */
+
+/* Landscape mode for tablets and laptops */
+@media (max-height: 700px) and (min-width: 600px) {
+    body {
+        padding: 10px 0;
+        align-items: flex-start;
+        overflow-y: auto;
+    }
+
+    .auth-container {
+        padding: 15px;
+        max-width: 520px;
+    }
+
+    .auth-card {
+        padding: 25px 35px;
+        border-radius: 18px;
+    }
+
+    .auth-header {
+        margin-bottom: 15px;
+    }
+
+    .auth-header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 6px;
+    }
+
+    .auth-header p {
+        font-size: 0.85rem;
+    }
+
+    .logo {
+        font-size: 1rem;
+        padding: 8px 16px;
+        margin-bottom: 12px;
+    }
+
+    /* Compact breadcrumbs */
+    .breadcrumb-container {
+        margin: 15px 0 20px;
+        padding: 0 10px;
+    }
+
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+
+    .step-label {
+        font-size: 0.65rem;
+    }
+
+    .breadcrumb-step {
+        gap: 5px;
+    }
+
+    /* Compact form fields */
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+
+    .form-group input {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+
+    .input-hint {
+        font-size: 0.7rem;
+    }
+
+    .requirements-list {
+        padding: 8px 0 0 5px;
+        gap: 4px 12px;
+        font-size: 0.75rem;
+    }
+
+    .strength-container {
+        height: 5px;
+        margin-top: 8px;
+    }
+
+    /* Compact buttons */
+    .auth-btn {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+    }
+
+    .step-navigation {
+        margin-top: 18px;
+        gap: 12px;
+    }
+
+    /* Compact summary */
+    .summary-section {
+        padding: 18px;
+        margin-bottom: 15px;
+    }
+
+    .summary-section h3 {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+
+    .summary-item {
+        padding: 8px 0;
+    }
+
+    .form-options {
+        margin-bottom: 15px;
+    }
+
+    .auth-footer {
+        margin-top: 18px;
+        padding-top: 15px;
+    }
+
+    /* Alert compact */
+    .alert {
+        padding: 12px 16px;
+        margin-bottom: 15px;
+        font-size: 0.85rem;
+    }
+
+    /* Hide decorations in landscape */
+    .auth-decoration {
+        display: none;
+    }
+
+    .theme-toggle {
+        top: 15px;
+        right: 15px;
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+}
+
+/* Extra compact for very short screens */
+@media (max-height: 550px) and (min-width: 600px) {
+    .auth-card {
+        padding: 20px 30px;
+    }
+
+    .auth-header {
+        margin-bottom: 10px;
+    }
+
+    .auth-header h1 {
+        font-size: 1.3rem;
+    }
+
+    .logo {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        margin-bottom: 8px;
+    }
+
+    .breadcrumb-container {
+        margin: 10px 0 15px;
+    }
+
+    .step-number {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    .form-group input {
+        padding: 10px 14px;
+    }
+
+    .requirements-list {
+        font-size: 0.7rem;
+        gap: 3px 10px;
+    }
+
+    .auth-btn {
+        padding: 10px 18px;
+    }
+
+    .step-navigation {
+        margin-top: 12px;
+    }
+
+    .summary-section {
+        padding: 14px;
+        margin-bottom: 12px;
+    }
+
+    .summary-item {
+        padding: 6px 0;
+        font-size: 0.85rem;
+    }
+}
+
+/* Wide landscape - use horizontal layout */
+@media (max-height: 600px) and (min-width: 900px) {
+    .auth-container {
+        max-width: 700px;
+    }
+
+    .form-step[data-step="1"] .form-group:first-child,
+    .form-step[data-step="1"] .form-group:nth-child(2) {
+        display: inline-block;
+        width: calc(50% - 10px);
+        vertical-align: top;
+    }
+
+    .form-step[data-step="1"] .form-group:first-child {
+        margin-right: 20px;
+    }
+
+    .form-step[data-step="2"] {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0 20px;
+    }
+
+    .form-step[data-step="2"] > .form-group {
+        flex: 1;
+        min-width: 250px;
+    }
+
+    .form-step[data-step="2"] > .step-navigation {
+        width: 100%;
+    }
+
+    .summary-section {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .summary-section h3 {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+
+    .summary-item {
+        flex: 1;
+        border-bottom: none;
+        border-right: 1px solid rgba(255, 255, 255, 0.05);
+        padding: 8px 15px;
+    }
+
+    .summary-item:last-child {
+        border-right: none;
+    }
+}
+
+/* Leaderboard landscape optimizations */
+@media (max-height: 700px) and (min-width: 600px) {
+    .leaderboard-container {
+        padding: 15px;
+    }
+
+    .leaderboard-header {
+        margin-bottom: 20px;
+    }
+
+    .leaderboard-header h1 {
+        font-size: 1.3rem;
+    }
+
+    .profile-card {
+        padding: 20px 25px;
+    }
+
+    .profile-avatar {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+    }
+
+    .profile-stats {
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 12px 15px;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.2rem;
+    }
+
+    .leaderboard-table {
+        margin-top: 20px;
+    }
+
+    .leaderboard-row {
+        padding: 12px 18px;
+    }
+
+    .tab-btn {
+        padding: 8px 14px;
+        font-size: 0.75rem;
+    }
 }
