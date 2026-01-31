@@ -14,6 +14,7 @@ class WordBombGame {
         this.timeLeft = 30;
         this.maxTime = 30;
         this.difficulty = 'medium';
+        this.selectedCategory = 'all';
         this.isPlaying = false;
         this.hintsUsed = 0;
         this.timer = null;
@@ -60,6 +61,12 @@ class WordBombGame {
         
         // Select default difficulty
         document.querySelector('[data-difficulty="medium"]').classList.add('selected');
+        
+        // Select default category (all)
+        const defaultCatBtn = document.querySelector('[data-category="all"]');
+        if (defaultCatBtn) {
+            defaultCatBtn.classList.add('selected');
+        }
     }
 
     async initAuthenticatedUser() {
@@ -91,6 +98,15 @@ class WordBombGame {
                 btn.classList.add('selected');
                 this.difficulty = btn.dataset.difficulty;
                 this.maxTime = parseInt(btn.dataset.time);
+            });
+        });
+
+        // Category buttons
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                this.selectedCategory = btn.dataset.category;
             });
         });
 
@@ -142,7 +158,7 @@ class WordBombGame {
 
     async loadNewWord() {
         try {
-            const response = await fetch(`api.php?action=getWord&difficulty=${this.difficulty}`);
+            const response = await fetch(`api.php?action=getWord&difficulty=${this.difficulty}&category=${encodeURIComponent(this.selectedCategory)}`);
             const data = await response.json();
             
             if (data.success) {

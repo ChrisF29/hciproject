@@ -30,31 +30,43 @@ function scrambleWord($word) {
 }
 
 /**
- * Get a random word based on difficulty
+ * Get a random word based on difficulty and category
  */
-function getRandomWord($difficulty = 'medium') {
+function getRandomWord($difficulty = 'medium', $category = 'all') {
     global $wordDatabase;
     
     // Define word length ranges based on difficulty
     $lengthRanges = [
-        'easy' => ['min' => 4, 'max' => 5],
+        'easy' => ['min' => 3, 'max' => 5],
         'medium' => ['min' => 5, 'max' => 7],
         'hard' => ['min' => 7, 'max' => 9],
-        'extreme' => ['min' => 8, 'max' => 12]
+        'extreme' => ['min' => 8, 'max' => 15]
     ];
     
     $range = $lengthRanges[$difficulty] ?? $lengthRanges['medium'];
     
-    // Filter words by length
+    // Filter words by length and category
     $filteredWords = [];
     foreach ($wordDatabase as $wordData) {
         $wordLength = strlen($wordData['word']);
-        if ($wordLength >= $range['min'] && $wordLength <= $range['max']) {
+        $lengthMatch = $wordLength >= $range['min'] && $wordLength <= $range['max'];
+        $categoryMatch = ($category === 'all' || strtolower($wordData['category']) === strtolower($category));
+        
+        if ($lengthMatch && $categoryMatch) {
             $filteredWords[] = $wordData;
         }
     }
     
-    // If no words found in range, use all words
+    // If no words found with both filters, try category only
+    if (empty($filteredWords) && $category !== 'all') {
+        foreach ($wordDatabase as $wordData) {
+            if (strtolower($wordData['category']) === strtolower($category)) {
+                $filteredWords[] = $wordData;
+            }
+        }
+    }
+    
+    // If still no words found, use all words
     if (empty($filteredWords)) {
         $filteredWords = $wordDatabase;
     }
@@ -69,6 +81,16 @@ function getRandomWord($difficulty = 'medium') {
         'category' => $selectedWord['category'],
         'hint' => $selectedWord['hint']
     ];
+}
+
+/**
+ * Get all available categories
+ */
+function getCategories() {
+    global $wordDatabase;
+    $categories = array_unique(array_column($wordDatabase, 'category'));
+    sort($categories);
+    return $categories;
 }
 
 /**
@@ -136,13 +158,14 @@ $action = $_GET['action'] ?? $_POST['action'] ?? '';
 switch ($action) {
     case 'getWord':
         $difficulty = $_GET['difficulty'] ?? 'medium';
+        $category = $_GET['category'] ?? 'all';
         $validDifficulties = ['easy', 'medium', 'hard', 'extreme'];
         
         if (!in_array($difficulty, $validDifficulties)) {
             $difficulty = 'medium';
         }
         
-        $wordData = getRandomWord($difficulty);
+        $wordData = getRandomWord($difficulty, $category);
         
         echo json_encode([
             'success' => true,
@@ -150,7 +173,16 @@ switch ($action) {
             'scrambled' => $wordData['scrambled'],
             'category' => $wordData['category'],
             'hint' => $wordData['hint'],
-            'difficulty' => $difficulty
+            'difficulty' => $difficulty,
+            'selectedCategory' => $category
+        ]);
+        break;
+        
+    case 'getCategories':
+        $categories = getCategories();
+        echo json_encode([
+            'success' => true,
+            'categories' => $categories
         ]);
         break;
         
