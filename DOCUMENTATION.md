@@ -397,7 +397,7 @@ class WordBombGame {
         this.difficulty = 'medium';  // Selected difficulty
         this.selectedCategory = 'all'; // Selected category filter
         this.isPlaying = false;      // Is game currently active
-        this.hintsUsed = 0;          // Hints used this game (max 3)
+        this.hintsUsed = 0;          // Hints used this game
         this.timer = null;           // Reference to setInterval
         this.soundEnabled = true;    // Sound effects toggle
         
