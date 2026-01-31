@@ -6,18 +6,53 @@ A thrilling web-based word scramble game where players must unscramble words bef
 
 ## 🎮 Game Features
 
+### Main Menu
+- **Play Game** - Start a new game with customizable settings
+- **Options** - Configure sound effects and theme preferences
+- **Leaderboards** - View global rankings
+- **How To Play** - Learn the game mechanics
+
+### Game Setup (2-Step Process)
+1. **Select Difficulty** - Choose your challenge level
+2. **Select Category** - Pick a word category or play with all categories
+
 ### Core Gameplay
 - **Word Scramble Challenge** - Unscramble words before time runs out
 - **Bomb Timer** - Visual bomb with countdown timer that ticks and shakes
 - **4 Difficulty Levels**:
-  - 🟢 **Easy** - 30 seconds per word
-  - 🟡 **Medium** - 20 seconds per word
-  - 🔴 **Hard** - 12 seconds per word
-  - 💀 **Extreme** - 7 seconds per word
+  - 🟢 **Easy** - 30 seconds per word (short words)
+  - 🟡 **Medium** - 20 seconds per word (balanced)
+  - 🔴 **Hard** - 12 seconds per word (longer words)
+  - 💀 **Extreme** - 7 seconds per word (ultimate challenge)
 - **Scoring System** - Points based on speed, difficulty, and streaks
 - **Streak Bonuses** - Build combos for bonus points
-- **Hints System** - Get help at a point cost
-- **Skip Option** - Skip difficult words with penalty
+- **Hints System** - Get help at a point cost (-50 pts)
+- **Skip Option** - Skip difficult words with penalty (-100 pts)
+
+### 📚 Word Categories (22 Categories)
+Play with words from specific categories:
+- 🐾 **Animals** - From cats to hippopotamus
+- 🍕 **Food** - Fruits, vegetables, dishes & more
+- 💻 **Technology** - Gadgets, software & digital terms
+- ⚽ **Sports** - From yoga to gymnastics
+- 🌿 **Nature** - Mountains, oceans, weather phenomena
+- 🔬 **Science** - Atoms, molecules & experiments
+- 🎵 **Music** - Instruments & musical terms
+- 🌍 **Countries** - Nations around the world
+- 🐉 **Fantasy** - Dragons, wizards & mythical creatures
+- 👨‍⚕️ **Professions** - Jobs and careers
+- 🚀 **Space** - Planets, stars & cosmic objects
+- 👕 **Clothing** - Apparel & accessories
+- 🏰 **Buildings** - Structures & architecture
+- 😊 **Emotions** - Feelings & moods
+- 🎮 **Games** - Board games & entertainment
+- 🚗 **Transportation** - Vehicles & travel
+- 🌦️ **Weather** - Climate & meteorology
+- 🏠 **Household** - Home items & furniture
+- 🫀 **Body** - Anatomy & body parts
+- 🎨 **Colors** - Color names
+- 🔷 **Shapes** - Geometric shapes
+- 🎲 **All Categories** - Random mix of everything
 
 ### Visual Effects
 - 💥 Explosion animations when time runs out
@@ -46,9 +81,10 @@ A thrilling web-based word scramble game where players must unscramble words bef
 ```
 hciproject/
 ├── index.php           # Main entry point (auth wrapper)
-├── game.html           # Game interface
-├── style.css           # Game styles
+├── game.html           # Game interface (all screens)
+├── style.css           # Game styles (2200+ lines)
 ├── script.js           # Game logic (WordBombGame class)
+├── api.php             # Word API endpoints
 ├── auth.php            # Authentication functions
 ├── auth-style.css      # Auth pages styles
 ├── login.php           # Login page
@@ -57,7 +93,7 @@ hciproject/
 ├── database.php        # Database setup & connection
 ├── game_api.php        # Game API endpoints
 ├── leaderboard.php     # Leaderboard page
-├── words.php           # Word database
+├── words.php           # Word database (500+ words)
 └── README.md           # This file
 ```
 
@@ -105,23 +141,39 @@ hciproject/
 
 ## 🎯 API Endpoints
 
-### `game_api.php`
+### `api.php` (Word API)
+
+| Action | Method | Parameters | Description |
+|--------|--------|------------|-------------|
+| `getWord` | GET | `difficulty`, `category` | Get a random word for the game |
+| `getCategories` | GET | - | Get list of all categories |
+| `saveScore` | POST | `score`, `words`, `difficulty` | Save game score |
+| `getHighScores` | GET | `limit`, `difficulty` | Get high scores |
+| `checkWord` | POST | `guess`, `correct` | Validate a guess |
+
+### `game_api.php` (User API)
 
 | Action | Method | Description |
 |--------|--------|-------------|
-| `getWord` | GET | Get a random word for the game |
-| `saveScore` | POST | Save game score |
 | `getProfile` | GET | Get user profile data |
 | `getLeaderboard` | GET | Get leaderboard data |
 | `checkAuth` | GET | Check authentication status |
+| `saveScore` | POST | Save score with achievements |
 
 ## 🎨 Theme Support
 
 The game supports both **Dark Mode** and **Light Mode**:
 
-- Click the 🌙/☀️ button in the top-right corner to toggle
+- Access via **Options** menu from the main menu
 - Theme preference is saved in localStorage
 - Smooth transitions between themes
+- All screens fully styled for both themes
+
+## 🔊 Options
+
+Configure your game experience:
+- **Sound Effects** - Toggle game sounds ON/OFF
+- **Dark Mode** - Toggle between dark and light themes
 
 ## 🏆 Achievements
 
@@ -147,11 +199,16 @@ $database = 'wordbomb_game';
 ### Adding Words
 Edit `words.php` to add new words to the game:
 ```php
-$words = [
-    'category' => ['word1', 'word2', 'word3'],
-    // Add more categories...
+$wordDatabase = [
+    ['word' => 'example', 'category' => 'Category', 'hint' => 'A hint for the word'],
+    // Add more words with category and hint...
 ];
 ```
+
+Each word entry requires:
+- `word` - The word to scramble
+- `category` - Category for filtering
+- `hint` - Hint shown when player uses hint button
 
 ## 🎵 Sound Effects
 
@@ -185,6 +242,30 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 👨‍💻 Author
 
 Created as an HCI (Human-Computer Interaction) project.
+
+---
+
+## 📸 Screenshots
+
+### Main Menu
+- Clean 4-button interface
+- Play Game, Options, Leaderboards, How To Play
+
+### Game Setup
+- Step 1: Choose difficulty (Easy/Medium/Hard/Extreme)
+- Step 2: Choose category (22 options or All Categories)
+
+### Gameplay
+- Scrambled word display
+- Bomb with countdown timer
+- Score, streak, and words defused tracking
+- Hint and skip buttons
+
+### Game Over
+- Final score display
+- Words defused count
+- Best streak achieved
+- Play Again or return to Main Menu
 
 ---
 
