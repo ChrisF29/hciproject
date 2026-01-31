@@ -84,7 +84,7 @@ $avatars = ['🎮', '💣', '🔥', '⭐', '🏆', '👑', '🎯', '⚡', '🌟'
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaderboard - Word Bomb</title>
+    <title>Leaderboard - Decrypt</title>
     <link rel="stylesheet" href="auth-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
@@ -92,7 +92,7 @@ $avatars = ['🎮', '💣', '🔥', '⭐', '🏆', '👑', '🎯', '⚡', '🌟'
     <div class="leaderboard-container">
         <!-- Header -->
         <div class="leaderboard-header">
-            <a href="index.html" class="logo">💣 WORD BOMB</a>
+            <a href="index.html" class="logo">💣 DECRYPT</a>
             <h1>🏆 LEADERBOARD</h1>
             <p>Top bomb defusers around the world</p>
         </div>
