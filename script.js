@@ -26,7 +26,11 @@ class WordBombGame {
 
         // DOM Elements
         this.screens = {
-            start: document.getElementById('start-screen'),
+            mainMenu: document.getElementById('main-menu-screen'),
+            difficulty: document.getElementById('difficulty-screen'),
+            category: document.getElementById('category-screen'),
+            options: document.getElementById('options-screen'),
+            howtoplay: document.getElementById('howtoplay-screen'),
             game: document.getElementById('game-screen'),
             gameover: document.getElementById('gameover-screen')
         };
@@ -58,14 +62,42 @@ class WordBombGame {
         this.bindEvents();
         this.loadHighScores();
         this.initAuthenticatedUser();
+        this.initOptionsState();
         
         // Select default difficulty
-        document.querySelector('[data-difficulty="medium"]').classList.add('selected');
+        const defaultDiffBtn = document.querySelector('[data-difficulty="medium"]');
+        if (defaultDiffBtn) {
+            defaultDiffBtn.classList.add('selected');
+        }
         
         // Select default category (all)
         const defaultCatBtn = document.querySelector('[data-category="all"]');
         if (defaultCatBtn) {
             defaultCatBtn.classList.add('selected');
+        }
+    }
+
+    initOptionsState() {
+        // Initialize sound state from localStorage
+        const soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+        this.soundEnabled = soundEnabled;
+        this.updateSoundToggle();
+        
+        // Initialize theme state
+        const theme = localStorage.getItem('theme') || 'dark';
+        const themeToggle = document.getElementById('theme-option-toggle');
+        if (themeToggle) {
+            themeToggle.textContent = theme === 'dark' ? 'ON' : 'OFF';
+            themeToggle.classList.toggle('active', theme === 'dark');
+        }
+    }
+
+    updateSoundToggle() {
+        const soundOptionToggle = document.getElementById('sound-option-toggle');
+        
+        if (soundOptionToggle) {
+            soundOptionToggle.textContent = this.soundEnabled ? 'ON' : 'OFF';
+            soundOptionToggle.classList.toggle('active', this.soundEnabled);
         }
     }
 
@@ -88,6 +120,28 @@ class WordBombGame {
     }
 
     bindEvents() {
+        // Main Menu buttons
+        document.getElementById('play-game-btn').addEventListener('click', () => this.showScreen('difficulty'));
+        document.getElementById('options-btn').addEventListener('click', () => this.showScreen('options'));
+        document.getElementById('how-to-play-btn').addEventListener('click', () => this.showScreen('howtoplay'));
+        
+        // Difficulty screen navigation
+        document.getElementById('diff-back-btn').addEventListener('click', () => this.showScreen('mainMenu'));
+        document.getElementById('diff-next-btn').addEventListener('click', () => this.goToCategoryScreen());
+        
+        // Category screen navigation
+        document.getElementById('cat-back-btn').addEventListener('click', () => this.showScreen('difficulty'));
+        
+        // Options screen
+        document.getElementById('options-back-btn').addEventListener('click', () => this.showScreen('mainMenu'));
+        document.getElementById('options-save-btn').addEventListener('click', () => this.showScreen('mainMenu'));
+        document.getElementById('sound-option-toggle').addEventListener('click', () => this.toggleSoundOption());
+        document.getElementById('theme-option-toggle').addEventListener('click', () => this.toggleThemeOption());
+        
+        // How to play screen
+        document.getElementById('howto-back-btn').addEventListener('click', () => this.showScreen('mainMenu'));
+        document.getElementById('howto-play-btn').addEventListener('click', () => this.showScreen('difficulty'));
+        
         // Start button
         document.getElementById('start-btn').addEventListener('click', () => this.startGame());
 
@@ -124,10 +178,43 @@ class WordBombGame {
 
         // Game over buttons
         document.getElementById('play-again-btn').addEventListener('click', () => this.startGame());
-        document.getElementById('menu-btn').addEventListener('click', () => this.showScreen('start'));
+        document.getElementById('menu-btn').addEventListener('click', () => this.showScreen('mainMenu'));
+    }
 
-        // Sound toggle
-        document.getElementById('sound-toggle').addEventListener('click', () => this.toggleSound());
+    goToCategoryScreen() {
+        // Update the selected difficulty badge
+        const diffBadge = document.getElementById('selected-diff-badge');
+        const diffIcons = { easy: '🟢', medium: '🟡', hard: '🔴', extreme: '💀' };
+        if (diffBadge) {
+            diffBadge.textContent = `${diffIcons[this.difficulty] || ''} ${this.difficulty.charAt(0).toUpperCase() + this.difficulty.slice(1)}`;
+            diffBadge.className = `diff-badge ${this.difficulty}`;
+        }
+        this.showScreen('category');
+    }
+
+    toggleSoundOption() {
+        this.soundEnabled = !this.soundEnabled;
+        localStorage.setItem('soundEnabled', this.soundEnabled);
+        this.updateSoundToggle();
+    }
+
+    toggleThemeOption() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        
+        const themeToggle = document.getElementById('theme-option-toggle');
+        if (themeToggle) {
+            themeToggle.textContent = newTheme === 'dark' ? 'ON' : 'OFF';
+            themeToggle.classList.toggle('active', newTheme === 'dark');
+        }
+        
+        // Update theme icon in corner
+        const themeIcon = document.querySelector('.theme-icon');
+        if (themeIcon) {
+            themeIcon.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+        }
     }
 
     showScreen(screenName) {
@@ -509,8 +596,8 @@ class WordBombGame {
 
     toggleSound() {
         this.soundEnabled = !this.soundEnabled;
-        const btn = document.getElementById('sound-toggle');
-        btn.textContent = this.soundEnabled ? '🔊' : '🔇';
+        localStorage.setItem('soundEnabled', this.soundEnabled);
+        this.updateSoundToggle();
     }
 
     playSound(type) {

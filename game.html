@@ -13,46 +13,93 @@
         <div id="user-bar" class="user-bar">
             <div id="logged-in-view" class="user-section">
                 <span id="user-welcome" class="user-welcome">👤 Welcome, <span id="username-display"><?php echo htmlspecialchars($currentUser['username']); ?></span>!</span>
-                <a href="leaderboard.php" class="user-btn leaderboard-btn">🏆 Leaderboard</a>
                 <a href="logout.php" class="user-btn logout-btn">🚪 Logout</a>
             </div>
         </div>
 
-        <!-- Start Screen -->
-        <div id="start-screen" class="screen active">
+        <!-- Main Menu Screen -->
+        <div id="main-menu-screen" class="screen active">
             <div class="title-container">
                 <h1 class="game-title">💣 Decrypt 💣</h1>
                 <p class="subtitle">Defuse the scramble before it's too late!</p>
             </div>
             
+            <div class="main-menu-buttons">
+                <button id="play-game-btn" class="menu-btn play-btn">
+                    <span class="menu-icon">🎮</span>
+                    <span class="menu-text">Play Game</span>
+                </button>
+                <button id="options-btn" class="menu-btn options-btn">
+                    <span class="menu-icon">⚙️</span>
+                    <span class="menu-text">Options</span>
+                </button>
+                <button id="leaderboards-btn" class="menu-btn leaderboards-btn" onclick="window.location.href='leaderboard.php'">
+                    <span class="menu-icon">🏆</span>
+                    <span class="menu-text">Leaderboards</span>
+                </button>
+                <button id="how-to-play-btn" class="menu-btn howto-btn">
+                    <span class="menu-icon">❓</span>
+                    <span class="menu-text">How To Play</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Difficulty Selection Screen -->
+        <div id="difficulty-screen" class="screen">
+            <div class="setup-header">
+                <button id="diff-back-btn" class="back-btn">← Back</button>
+                <h2 class="setup-title">Select Difficulty</h2>
+                <div class="step-indicator">Step 1 of 2</div>
+            </div>
+            
             <div class="difficulty-selector">
-                <h3>Select Difficulty</h3>
                 <div class="difficulty-buttons">
                     <button class="diff-btn" data-difficulty="easy" data-time="30">
                         <span class="diff-icon">🟢</span>
                         <span class="diff-name">Easy</span>
                         <span class="diff-time">30 seconds</span>
+                        <span class="diff-desc">Short words, more time</span>
                     </button>
                     <button class="diff-btn" data-difficulty="medium" data-time="20">
                         <span class="diff-icon">🟡</span>
                         <span class="diff-name">Medium</span>
                         <span class="diff-time">20 seconds</span>
+                        <span class="diff-desc">Balanced challenge</span>
                     </button>
                     <button class="diff-btn" data-difficulty="hard" data-time="12">
                         <span class="diff-icon">🔴</span>
                         <span class="diff-name">Hard</span>
                         <span class="diff-time">12 seconds</span>
+                        <span class="diff-desc">Longer words, less time</span>
                     </button>
                     <button class="diff-btn" data-difficulty="extreme" data-time="7">
                         <span class="diff-icon">💀</span>
                         <span class="diff-name">Extreme</span>
                         <span class="diff-time">7 seconds</span>
+                        <span class="diff-desc">Ultimate challenge</span>
                     </button>
                 </div>
             </div>
+            
+            <div class="setup-nav-buttons">
+                <button id="diff-next-btn" class="main-btn">NEXT →</button>
+            </div>
+        </div>
+
+        <!-- Category Selection Screen -->
+        <div id="category-screen" class="screen">
+            <div class="setup-header">
+                <button id="cat-back-btn" class="back-btn">← Back</button>
+                <h2 class="setup-title">Select Category</h2>
+                <div class="step-indicator">Step 2 of 2</div>
+            </div>
+            
+            <div class="selected-difficulty-display">
+                <span>Difficulty: </span>
+                <span id="selected-diff-badge" class="diff-badge">Medium</span>
+            </div>
 
             <div class="category-selector">
-                <h3>Select Category</h3>
                 <div class="category-buttons">
                     <button class="cat-btn selected" data-category="all">
                         <span class="cat-icon">🎲</span>
@@ -145,17 +192,76 @@
                 </div>
             </div>
             
-            <button id="start-btn" class="main-btn pulse">START GAME</button>
+            <div class="setup-nav-buttons">
+                <button id="start-btn" class="main-btn pulse">START GAME 🎮</button>
+            </div>
+        </div>
+
+        <!-- Options Screen -->
+        <div id="options-screen" class="screen">
+            <div class="setup-header">
+                <button id="options-back-btn" class="back-btn">← Back</button>
+                <h2 class="setup-title">Options</h2>
+            </div>
             
-            <div class="instructions">
-                <h4>How to Play</h4>
-                <ul>
-                    <li>🔤 Unscramble the word before the bomb explodes</li>
-                    <li>⌨️ Type your answer and press Enter or click Submit</li>
-                    <li>💡 Use hints if you're stuck (costs points)</li>
-                    <li>🏆 Score points for each word defused</li>
-                    <li>⚡ Faster answers = More points!</li>
-                </ul>
+            <div class="options-container">
+                <div class="option-item">
+                    <span class="option-label">🔊 Sound Effects</span>
+                    <button id="sound-option-toggle" class="option-toggle active">ON</button>
+                </div>
+                <div class="option-item">
+                    <span class="option-label">🌙 Dark Mode</span>
+                    <button id="theme-option-toggle" class="option-toggle active">ON</button>
+                </div>
+            </div>
+            
+            <div class="setup-nav-buttons">
+                <button id="options-save-btn" class="main-btn">SAVE</button>
+            </div>
+        </div>
+
+        <!-- How To Play Screen -->
+        <div id="howtoplay-screen" class="screen">
+            <div class="setup-header">
+                <button id="howto-back-btn" class="back-btn">← Back</button>
+                <h2 class="setup-title">How To Play</h2>
+            </div>
+            
+            <div class="instructions-full">
+                <div class="instruction-card">
+                    <span class="instruction-icon">🔤</span>
+                    <h4>Unscramble Words</h4>
+                    <p>A scrambled word will appear on screen. Figure out the original word before time runs out!</p>
+                </div>
+                <div class="instruction-card">
+                    <span class="instruction-icon">⌨️</span>
+                    <h4>Type & Submit</h4>
+                    <p>Type your answer in the input field and press Enter or click the Defuse button to submit.</p>
+                </div>
+                <div class="instruction-card">
+                    <span class="instruction-icon">💡</span>
+                    <h4>Use Hints</h4>
+                    <p>Stuck? Use a hint to get a clue about the word. But be careful - hints cost 50 points!</p>
+                </div>
+                <div class="instruction-card">
+                    <span class="instruction-icon">⏭️</span>
+                    <h4>Skip Words</h4>
+                    <p>You can skip difficult words, but it will cost you 100 points and reset your streak.</p>
+                </div>
+                <div class="instruction-card">
+                    <span class="instruction-icon">🔥</span>
+                    <h4>Build Streaks</h4>
+                    <p>Answer correctly in a row to build your streak. Higher streaks mean bonus points!</p>
+                </div>
+                <div class="instruction-card">
+                    <span class="instruction-icon">⚡</span>
+                    <h4>Speed Bonus</h4>
+                    <p>The faster you answer, the more points you earn. Time remaining = extra points!</p>
+                </div>
+            </div>
+            
+            <div class="setup-nav-buttons">
+                <button id="howto-play-btn" class="main-btn">PLAY NOW!</button>
             </div>
         </div>
 
@@ -264,39 +370,13 @@
                 </div>
             </div>
         </div>
-
-        <!-- Theme Toggle -->
-        <button id="theme-toggle" class="theme-toggle" title="Toggle Light/Dark Mode">
-            <span class="theme-icon">🌙</span>
-        </button>
-
-        <!-- Sound Toggle -->
-        <button id="sound-toggle" class="sound-toggle">🔊</button>
     </div>
 
     <script src="script.js"></script>
     <script>
-        // Theme Toggle Functionality
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = themeToggle.querySelector('.theme-icon');
-        
-        // Check for saved theme preference or default to dark
+        // Theme initialization
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-        
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-        });
-        
-        function updateThemeIcon(theme) {
-            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
-        }
     </script>
 </body>
 </html>
